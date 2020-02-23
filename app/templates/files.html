@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<img src='/home/tai-vaughn/Desktop/webdev/web dev 2/lab/info3180-lab4/app/static/uploads/IMG-20190630-WA0009.jpg'>
+    <ul type="none">
+    {% for pic in filenames%}
+        <li>
+            <img {{pic}} > {{pic}}
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock%}

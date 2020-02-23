@@ -8,7 +8,7 @@ import os
 from app import app
 from flask import render_template, request, redirect, url_for, flash, session, abort
 from werkzeug.utils import secure_filename
-
+from .form import UploadForm
 
 ###
 # Routing for your application.
@@ -32,16 +32,25 @@ def upload():
         abort(401)
 
     # Instantiate your form class
+    photoform = UploadForm()
 
-    # Validate file upload on submit
-    if request.method == 'POST':
-        # Get file data and save to your uploads folder
+    if request.method == 'POST' and photoform.validate_on_submit():
+
+        photo = photoform.photo.data 
+
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(
+            app.config['UPLOAD_FOLDER'], filename
+        ))
 
         flash('File Saved', 'success')
         return redirect(url_for('home'))
+    return render_template('upload.html',form=photoform)
 
-    return render_template('upload.html')
-
+@app.route('/files')
+def files():
+    pic_links = get_uploaded_images()
+    return render_template('files.html', filenames=pic_links)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -62,6 +71,7 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out', 'success')
     return redirect(url_for('home'))
+
 
 
 ###
@@ -103,3 +113,12 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port="8080")
+
+def  get_uploaded_images():
+    rootdir = os.getcwd()
+    links = []
+    for subdir, dirs, files in os.walk(rootdir + app.config['UPLOAD_FOLDER']):
+        for file in files:
+            links.append(os.path.join(rootdir, file))
+        links.pop(-1)
+        return links
