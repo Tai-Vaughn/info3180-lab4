@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<img src='/home/tai-vaughn/Desktop/webdev/web dev 2/lab/info3180-lab4/app/static/uploads/IMG-20190630-WA0009.jpg'>
-    <ul type="none">
+    <ul type="none" class="grid">
     {% for pic in filenames%}
         <li>
-            <img {{pic}} > {{pic}}
+            <img src="{{url_for('static', filename ='uploads/'+ pic ) }}" height="150px" width="150px">
         </li>
     {% endfor %}
     </ul>

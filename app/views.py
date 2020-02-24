@@ -34,13 +34,13 @@ def upload():
     # Instantiate your form class
     photoform = UploadForm()
 
-    if request.method == 'POST' and photoform.validate_on_submit():
+    if request.method == 'POST' :
 
         photo = photoform.photo.data 
 
         filename = secure_filename(photo.filename)
         photo.save(os.path.join(
-            app.config['UPLOAD_FOLDER'], filename
+            '.'+app.config['UPLOAD_FOLDER'], filename
         ))
 
         flash('File Saved', 'success')
@@ -119,6 +119,6 @@ def  get_uploaded_images():
     links = []
     for subdir, dirs, files in os.walk(rootdir + app.config['UPLOAD_FOLDER']):
         for file in files:
-            links.append(os.path.join(rootdir, file))
-        links.pop(-1)
+            links.append(file)
+        links.pop(links.index(".gitkeep"))
         return links
